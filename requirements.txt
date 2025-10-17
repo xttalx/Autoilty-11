@@ -1,0 +1,27 @@
+# Python Data Scraping & Processing Dependencies
+requests>=2.31.0
+beautifulsoup4>=4.12.2
+lxml>=4.9.3
+pymongo>=4.6.0
+python-dotenv>=1.0.0
+googlemaps>=4.10.0
+pandas>=2.1.4
+numpy>=1.26.2
+schedule>=1.2.0
+
+# Rate limiting and retry logic
+ratelimit>=2.2.1
+backoff>=2.2.1
+
+# Data validation
+pydantic>=2.5.3
+validators>=0.22.0
+
+# Canadian-specific APIs
+geopy>=2.4.1
+phonenumbers>=8.13.27
+
+# Logging
+loguru>=0.7.2
+
+

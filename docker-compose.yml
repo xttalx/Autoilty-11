@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: autoilty-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: autoilty2025
+      MONGO_INITDB_DATABASE: autoilty-curator
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - autoilty-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: autoilty-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass autoilty2025
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - autoilty-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: autoilty-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./server:/app/server
+      - ./scripts:/app/scripts
+      - /app/node_modules
+    networks:
+      - autoilty-network
+    command: npm run dev
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: autoilty-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+      - /app/node_modules
+    networks:
+      - autoilty-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_WS_URL=ws://localhost:5000
+
+  # Nginx Reverse Proxy (Production)
+  nginx:
+    image: nginx:alpine
+    container_name: autoilty-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./client/build:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - autoilty-network
+
+networks:
+  autoilty-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+
