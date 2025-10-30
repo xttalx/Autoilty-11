@@ -157,4 +157,4 @@ export default function BusinessCard({ business }: BusinessCardProps) {
       </div>
     </div>
   );
- 
+}
