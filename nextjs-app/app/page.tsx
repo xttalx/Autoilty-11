@@ -31,9 +31,26 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Detect country and redirect to country-specific page
-  const headersList = await headers();
-  const clientIP = getClientIP(headersList);
-  const countryCode = detectCountry(clientIP, headersList);
-  
-  redirect(`/${countryCode.toLowerCase()}`);
+  try {
+    const headersList = await headers();
+    let countryCode = 'ca'; // Default to Canada
+    
+    try {
+      const clientIP = getClientIP(headersList);
+      countryCode = detectCountry(clientIP, headersList).toLowerCase();
+      
+      // Validate country code
+      if (!['ca', 'sg', 'my', 'id', 'th'].includes(countryCode)) {
+        countryCode = 'ca';
+      }
+    } catch (error) {
+      console.error('GeoIP detection failed:', error);
+      countryCode = 'ca';
+    }
+    
+    redirect(`/${countryCode}`);
+  } catch (error) {
+    // Ultimate fallback
+    redirect('/ca');
+  }
 }

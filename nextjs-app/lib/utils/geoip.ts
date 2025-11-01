@@ -1,5 +1,12 @@
 import { getCountryConfig } from '@/lib/config/countries';
-import geoip from 'geoip-lite';
+
+// Lazy load geoip-lite to handle cases where it's not installed
+let geoip: any = null;
+try {
+  geoip = require('geoip-lite');
+} catch (error) {
+  console.warn('geoip-lite not available, using header-based detection only');
+}
 
 export interface GeoLocation {
   country: string;
@@ -15,7 +22,7 @@ export interface GeoLocation {
  */
 export function detectCountry(ip?: string, headers?: Headers): string {
   // Try geoip detection first
-  if (ip) {
+  if (ip && geoip) {
     try {
       const geo = geoip.lookup(ip);
       if (geo && geo.country) {
@@ -90,7 +97,7 @@ export function getGeoLocation(ip?: string, headers?: Headers): GeoLocation {
     timezone: '',
   };
 
-  if (ip) {
+  if (ip && geoip) {
     try {
       const geoData = geoip.lookup(ip);
       if (geoData) {
