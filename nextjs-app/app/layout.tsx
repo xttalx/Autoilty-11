@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script';
+// i18n will be initialized client-side in providers
 
 const inter = Inter({
   subsets: ['latin'],

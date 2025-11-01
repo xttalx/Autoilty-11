@@ -2,14 +2,17 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiMapPin, FiPhone, FiGlobe, FiClock, FiStar, FiShare2, FiHeart } from 'react-icons/fi';
+import { FiMapPin, FiPhone, FiGlobe, FiClock, FiStar, FiShare2, FiHeart, FiMessageCircle } from 'react-icons/fi';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BusinessDetailsProps {
   business: any;
+  countryCode: string;
 }
 
-export default function BusinessDetails({ business }: BusinessDetailsProps) {
+export default function BusinessDetails({ business, countryCode }: BusinessDetailsProps) {
+  const { t } = useTranslation();
   const [saved, setSaved] = useState(false);
 
   const {
@@ -26,6 +29,7 @@ export default function BusinessDetails({ business }: BusinessDetailsProps) {
     priceRange,
     isPremium,
     verified,
+    forumThreadId,
   } = business;
 
   const primaryImage = images?.[0]?.url || '/default-business.jpg';
@@ -126,7 +130,7 @@ export default function BusinessDetails({ business }: BusinessDetailsProps) {
                 className="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
               >
                 <FiPhone />
-                Call Now
+                {t('listing.call')}
               </a>
             )}
             {contact?.website && (
@@ -137,8 +141,17 @@ export default function BusinessDetails({ business }: BusinessDetailsProps) {
                 className="flex items-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
               >
                 <FiGlobe />
-                Visit Website
+                {t('listing.website')}
               </a>
+            )}
+            {forumThreadId && (
+              <Link
+                href={`/forums/${forumThreadId}`}
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                <FiMessageCircle />
+                {t('listing.forum')}
+              </Link>
             )}
             <a
               href={`https://maps.google.com/?q=${location?.address?.street}, ${location?.address?.city}`}
@@ -182,7 +195,7 @@ export default function BusinessDetails({ business }: BusinessDetailsProps) {
                 <span className="font-bold">{score?.socialSignals?.toFixed(1) || '0.0'}/2.0</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-medium">Canadian Factors (10%)</span>
+                <span className="font-medium">Local Factors (10%)</span>
                 <span className="font-bold">{score?.canadianFactors?.toFixed(1) || '0.0'}/1.0</span>
               </div>
             </div>
@@ -218,33 +231,12 @@ export default function BusinessDetails({ business }: BusinessDetailsProps) {
             </div>
           )}
 
-          {/* Canadian Badges */}
-          {canadianFactors && (
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="text-xl font-bold mb-4">Canadian Features</h3>
-              <div className="space-y-2">
-                {canadianFactors.winterServices && (
-                  <div className="badge badge-primary">❄️ Winter Ready</div>
-                )}
-                {canadianFactors.evReadiness?.evCertified && (
-                  <div className="badge badge-success">⚡ EV Certified</div>
-                )}
-                {canadianFactors.bilingualService?.french && (
-                  <div className="badge badge-primary">🇫🇷 Bilingual</div>
-                )}
-                {canadianFactors.rustProofing && (
-                  <div className="badge badge-primary">🛡️ Rust Proofing</div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Map */}
           {location?.coordinates && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h3 className="text-xl font-bold mb-4">Location</h3>
               <div className="h-48 bg-gray-200 rounded-lg">
-                {/* Google Maps embed to be added */}
+                {/* Google Maps embed */}
                 <iframe
                   width="100%"
                   height="100%"

@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState } from 'react';
-import { FiMenu, FiX, FiSearch, FiUser, FiLogOut, FiSettings } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiUser, FiLogOut, FiSettings, FiGlobe } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
+import { getCountryConfig } from '@/lib/config/countries';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -53,6 +54,31 @@ export default function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Country Switcher */}
+            <div className="relative group">
+              <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors">
+                <FiGlobe className="w-5 h-5" />
+                <span className="hidden sm:inline">Country</span>
+              </button>
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <Link href="/ca" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  🇨🇦 Canada
+                </Link>
+                <Link href="/sg" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  🇸🇬 Singapore
+                </Link>
+                <Link href="/my" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  🇲🇾 Malaysia
+                </Link>
+                <Link href="/id" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  🇮🇩 Indonesia
+                </Link>
+                <Link href="/th" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  🇹🇭 Thailand
+                </Link>
+              </div>
+            </div>
+
             {/* Search Button */}
             <Link
               href="/search"

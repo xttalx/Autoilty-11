@@ -13,10 +13,16 @@
     "generate:sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
-    "next": "^14.0.4",
+    "next": "^15.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next-auth": "^4.24.5",
+    "next-i18next": "^15.2.0",
+    "i18next": "^23.7.16",
+    "react-i18next": "^14.0.0",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "geoip-lite": "^1.4.7",
+    "@maxmind/geoip2-node": "^5.0.0",
     "@supabase/supabase-js": "^2.39.0",
     "@supabase/ssr": "^0.1.0",
     "axios": "^1.6.2",

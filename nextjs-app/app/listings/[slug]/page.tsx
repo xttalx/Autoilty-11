@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { generateSEOMetadata, generateLocalBusinessSchema, generateBreadcrumbSchema } from '@/lib/seo';
 import BusinessDetails from '@/components/listings/BusinessDetails';
+import { detectCountry, getClientIP } from '@/lib/utils/geoip';
+import { headers } from 'next/headers';
 
 interface PageProps {
   params: {
@@ -54,6 +56,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BusinessPage({ params }: PageProps) {
+  const headersList = await headers();
+  const clientIP = getClientIP(headersList);
+  const countryCode = detectCountry(clientIP, headersList);
+  
   const business = await getBusiness(params.slug);
 
   if (!business) {
@@ -81,7 +87,7 @@ export default async function BusinessPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <BusinessDetails business={business} />
+      <BusinessDetails business={business} countryCode={countryCode} />
     </>
   );
 }

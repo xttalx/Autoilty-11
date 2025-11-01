@@ -2,8 +2,14 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getCountryConfig } from '@/lib/config/countries';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  countryCode?: string;
+}
+
+export default function HeroSection({ countryCode = 'CA' }: HeroSectionProps) {
+  const config = getCountryConfig(countryCode);
   return (
     <section className="relative bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white overflow-hidden">
       {/* Background Pattern */}
@@ -21,7 +27,7 @@ export default function HeroSection() {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            Canada's #1
+            {config.name}'s #1
             <br />
             <span className="bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-transparent">
               Automotive Directory
