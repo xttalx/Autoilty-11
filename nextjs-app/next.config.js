@@ -65,6 +65,16 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/README.md',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/readme',
+        destination: '/',
+        permanent: true,
+      },
     ];
   },
 
